@@ -19,7 +19,8 @@ Before getting started with the installation of Service Workbench on AWS, you sh
 
 To deploy and configure Service Workbench on AWS, you will need a development environment. To avoid any confusion with your local environment, we will use AWS Cloud9, which is a cloud-based integrated development environment (IDE) that lets you write, run, and debug your code with just a browser. 
 
-1. Within your AWS Console, go to the [AWS Cloud9 service](https://console.aws.amazon.com/cloud9/home/product)
+1. Within your AWS Console, check that you are in the region in which you will be deploying Service Workbench.
+1. Open the [AWS Cloud9 console](https://console.aws.amazon.com/cloud9/home/product)
 1. Choose **Create Environment**
 1. Fill the Name field with: `c9-swb-dev`
 1. Add a meaningful description
@@ -34,20 +35,46 @@ To deploy and configure Service Workbench on AWS, you will need a development en
 1. Click on **Next Step**
 1. Review the configuration, and click on **Create Environment**
 
-1.3	Installing required tools and utilities
-The last of the requirements is to install the libraries and tools required to complete the installation of the Service Workbench on AWS. Additionally, by default, the AWS Cloud9 instance bundles a 10Gb EBS volume. This won’t be enough for our development environment. The script will also resize our AWS Cloud9 instance disk:
+### 1.3 Install required tools and utilities
 
-1.	Clone the Service Workbench on AWS using Cloud9 boostrap repository
-2.	Read and execute the contents of the init script 
-(Optional) Access platform reference documentation
-The documentation is available via Docusaurus; In order for you to be able to access it, please modify the AWS Cloud9 instance security group to include your IP address. If you need additional guidance, follow the documentation.
+This step clones a repository of utility scripts, and runs the script `tools-init.sh` to install all libraries and tools required to deploy Service Workbench on AWS. The script also enlargens the default 10 GB instance store provided with Cloud9.
 
-After modifying the security group, you can build and serve the documentation:
+1. Clone the Service Workbench on AWS using Cloud9 boostrap repository
 
+```
+cd
+git clone https://github.com/aws-samples/aws-swb-cloud9-init
+cd aws-swb-cloud9-init
+```
+
+
+2. Review, and then run, the init script `tools-init.sh`.  This script:
+    
+    * Sets your current region as the `AWS_REGION` environment variable, uses this value as the default for `aws configure`, and appends this setting to your `.bashrc` file.
+    * Clones the Service Workbench source code from its [GitHub repository](https://github.com/awslabs/service-workbench-on-aws) to the directory `service-workbench-on-aws/`.
+    * Runs the script `cloud9-resize.sh` to change the Cloud9 volume from 10 GB to 50 GB.
+    * Installs **nvm** (Node Version Manager), and uses this to install the latest version of **Node**.
+    * Installs the Node software **serverless**, **pnpm**, **hygen**, **yarn**, **docusaurus**.
+    * Installs **Packer**, used to build custom AMI images.
+
+```
+source tools-init.sh
+```
+
+### 1.4 (Optional) Access platform reference documentation
+The documentation is available via [Docusaurus](https://docusaurus.io/), which runs as a web server. To build and view the documentation, either clone the Service Workbench source code to your local machine, or modify the security group of your Cloud9 instance as described in this [documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/authorizing-access-to-an-instance.html)
+
+```
+cd ~/service-workbench-on-aws/docs
+yarn
+yarn start --port 3000 --host 0.0.0.0
+```
  
-2	Installing and configuring the Service Workbench on AWS
+## 2. Installing and configuring Service Workbench on AWS
+
 This section describes how to deploy Service Workbench on AWS using the AWS Cloud9 instance that we created in the pre-requisites section. Alternatively, it is possible to deploy from a local computer using local AWS CLI credentials. Keep in mind that tools and libraries installed in the previous section might be incompatible with your local system.
-2.1	Creating a new Service Workbench Configuration
+
+### 2.1 Creating a new Service Workbench Configuration
 
 In this section, you will install Service Workbench components into your AWS account. Once the last step is underway, you can proceed to the next section (Install AMIs for EC2-based workspaces) to run both processes simultaneously.
 
