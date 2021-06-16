@@ -57,7 +57,7 @@ cd aws-swb-cloud9-init
     * Installs the Node software **serverless**, **pnpm**, **hygen**, **yarn**, **docusaurus**.
     * Installs **Packer**, used to build custom AMI images.
 
-```
+```sh
 source tools-init.sh
 ```
 
@@ -69,7 +69,8 @@ cd ~/service-workbench-on-aws/docs
 yarn
 yarn start --port 3000 --host 0.0.0.0
 ```
- 
+
+---
 ## 2. Installing and configuring Service Workbench on AWS
 
 This section describes how to deploy Service Workbench on AWS using the AWS Cloud9 instance that we created in the pre-requisites section. Alternatively, it is possible to deploy from a local computer using local AWS CLI credentials. Keep in mind that tools and libraries installed in the previous section might be incompatible with your local system.
@@ -78,30 +79,60 @@ This section describes how to deploy Service Workbench on AWS using the AWS Clou
 
 In this section, you will install Service Workbench components into your AWS account. Once the last step is underway, you can proceed to the next section (Install AMIs for EC2-based workspaces) to run both processes simultaneously.
 
-1.	In the terminal, export the Stage Name that is going to be used in the deployment process, for this guide we will be using demo as the Stage Name.
-Note: The stage name is included in the name of the Amazon S3 storage bucket, so must be Amazon S3-compatible (lower-case characters, numbers, periods, and dashes)
-2.	Create a copy of the example configuration that comes bundled with the repository
-3.	Open the “demo.yml” configuration file on the on AWS Cloud9, uncomment, and set values for:
-3.1	solutionName: The solutionName is used in Amazon S3 bucket names so must be Amazon S3-compatible (lower-case characters, numbers, periods, and dashes)
-3.2	 awsRegion: The region you will be using for the deployment. Make sure to use the same region when you are using the AWS Console.
-4.	Back to the terminal, run the following script to complete the installation.
-Note: This takes up to 15 minutes and can be ran in parallel with the AMI Installation step.
-5.	Once the above step has completed, copy the root account password and website URL for later use.
-Note: To retrieve this information again, run this command:
-6.	Using the URL and root password from above, visit the Service Workbench on AWS website and log in using user “root”.
+1. In the terminal, export the **Stage Name** that is going to be used in the deployment process, for this guide we will be using `demo` as the Stage Name.
+
+    * _Note: The stage name is included in the name of the Amazon S3 storage bucket, so must be Amazon S3-compatible (lower-case characters, numbers, periods, and dashes), and fewer than 10 characters._
+2. Create a copy of the example configuration that comes bundled with the repository.
+
+```
+# The configuration file must be named after the stage name
+cd ~/service-workbench-on-aws/main/config/settings 
+cp example.yml ${STAGE_NAME}.yml
+```
+
+3. Open the configuration file `demo.yml` in the Cloud9 editor, and uncomment and set values for:
+
+    * `solutionName`: The solutionName is used in Amazon S3 bucket names so must be Amazon S3-compatible (lower-case characters, numbers, periods, and dashes)
+    * `awsRegion`: The region code (eg `us-east-1`) you will be using for the deployment. Make sure to use the same region when you are using the AWS Console.  Region codes may be looked up here: [Regional Endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html)
+
+4. In the terminal, run the `environment-deploy.sh` script to complete the installation, specifying the stage name as a parameter.
+
+    * Note: This takes up to 15 minutes and can be ran in parallel with the AMI installation step, below.
+
+```
+cd ~/service-workbench-on-aws/
+./scripts/environment-deploy.sh ${STAGE_NAME}
+```
+
+5. Once the above step has completed, copy the root account password and website URL for later use.
+
+    * Note: To retrieve this information again, run this command:
+        * `scripts/get-info.sh ${STAGE_NAME}`
+
+6. Using the URL and root password from above, visit the Service Workbench on AWS website and log in using user **root**.
 
 
-2.2	Install AMIs for EC2-based workspaces
+### 2.2 Install AMIs for EC2-based workspaces
 
-In order to use EC2-based workspaces, you must ﬁrst install Amazon EC2 AMIs for these workspaces. This process may be run concurrently with the previous section (while environment-deploy.sh is running). In order to run both simultaneously, use the menu Windows > New Terminal
+To use EC2-based workspaces, you must ﬁrst install Amazon EC2 AMIs for these workspaces. This process may be run concurrently with the previous section (while `environment-deploy.sh` is running). To run both simultaneously, open a new terminal in Cloud9 (check that the environment variable `STAGE_NAME` is set correctly in the new terminal)
 
-1.	In the terminal, run the following command to start the Amazon EC2 AMI generation
+1. In the terminal, run the following command to start the Amazon EC2 AMI generation
  
-2.	Once the process has been completed, you can verify that the Amazon EC2 AMI were created by running:  
-Note: This alias is defined in your ~/.bashrc file as a shortcut to query the Amazon EC2 API. You should see AMIs for EC2-LINUX, EC2-RSTUDIO, EC2-WINDOWS, and EMR.
+ ```
+cd ~/service-workbench-on-aws/main/solution/machine-images/ 
+pnpx sls build-image -s ${STAGE_NAME}
+```
 
- 
-3	Conﬁguring Accounts
+2. Once the process has been completed, you can verify that the Amazon EC2 AMI were created by running:
+
+```
+ swb-ami-list
+```
+
+Note: This alias is defined in your `~/.bashrc file` as a shortcut to query the Amazon EC2 API. You should see AMIs for **EC2-LINUX**, **EC2-RSTUDIO**, **EC2-WINDOWS**, and **EMR**.
+
+---
+## 3. Conﬁguring Accounts
 In this section, you will set up your Service Workbench instance with accounts, workspaces, and other features, that can be used for evaluating the main Service Workbench features. You can perform the steps in this section after logging into your Service Workbench web interface as root for the ﬁrst time (the veriﬁcation step of the Install the Service Workbench on AWS platform section above).
 
 3.1	Hosting account setup
