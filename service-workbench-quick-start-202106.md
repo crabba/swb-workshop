@@ -41,7 +41,7 @@ This step clones a repository of utility scripts, and runs the script `tools-ini
 
 1. Clone the Service Workbench on AWS using Cloud9 boostrap repository
 
-```
+```bash
 cd ~/environment
 git clone https://github.com/aws-samples/aws-swb-cloud9-init
 cd aws-swb-cloud9-init
@@ -57,7 +57,7 @@ cd aws-swb-cloud9-init
     * Installs the Node software **serverless**, **pnpm**, **hygen**, **yarn**, **docusaurus**.
     * Installs **Packer**, used to build custom AMI images.
 
-```sh
+```bash
 # From directory ~/environment/aws-swb-cloud9-init
 source tools-init.sh
 ```
@@ -65,7 +65,7 @@ source tools-init.sh
 ### 1.4 (Optional) Access platform reference documentation
 The documentation is available via [Docusaurus](https://docusaurus.io/), which runs as a web server. To build and view the documentation, either clone the Service Workbench source code to your local machine, or modify the security group of your Cloud9 instance as described in this [documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/authorizing-access-to-an-instance.html)
 
-```
+```bash
 cd ~/environment/service-workbench-on-aws/docs
 yarn
 yarn start --port 3000 --host 0.0.0.0
@@ -84,14 +84,14 @@ In this section, you will install Service Workbench components into your AWS acc
 
     * _Note: The stage name is included in the name of the Amazon S3 storage bucket, so must be Amazon S3-compatible (lower-case characters, numbers, periods, and dashes), and fewer than 10 characters._
 
-```
+```bash
 echo 'export STAGE_NAME=demo' >> ~/.bashrc
 source ~/.bashrc
 ```
 
 2. Create a copy of the example configuration that comes bundled with the repository.
 
-```
+```bash
 # The configuration file must be named after the stage name
 cd ~/environment/service-workbench-on-aws/main/config/settings 
 cp example.yml ${STAGE_NAME}.yml
@@ -106,7 +106,7 @@ cp example.yml ${STAGE_NAME}.yml
 
     * Note: This takes up to 15 minutes and can be ran in parallel with the AMI installation step, below.
 
-```
+```bash
 cd ~/environment/service-workbench-on-aws/
 ./scripts/environment-deploy.sh ${STAGE_NAME}
 ```
@@ -125,15 +125,15 @@ To use EC2-based workspaces, you must ﬁrst install Amazon EC2 AMIs for these w
 
 1. In the terminal, run the following command to start the Amazon EC2 AMI generation
  
- ```
+```bash
 cd ~/environment/service-workbench-on-aws/main/solution/machine-images/ 
 pnpx sls build-image -s ${STAGE_NAME}
 ```
 
 2. Once the process has been completed, you can verify that the Amazon EC2 AMI were created by running:
 
-```
- swb-ami-list
+```bash
+swb-ami-list
 ```
 
 Note: This alias is defined in your `~/.bashrc file` as a shortcut to query the Amazon EC2 API. You should see AMIs for **EC2-LINUX**, **EC2-RSTUDIO**, **EC2-WINDOWS**, and **EMR**.
@@ -149,7 +149,7 @@ In this section, you will set up your Service Workbench instance with accounts, 
 
 1.	Enter the host account script directory, and run the following command to create an AWS CloudFormation stack named `aws-hosting-account-${ACCOUNT_ID}-stack`, using the 12-digit account number that was passed to the script.
 
-```
+```bash
 # Go to our hosting account script dir
 cd ~/environment/aws-swb-cloud9-init/hosting-account/
 # Deploy the cloudformation stack for the hosting acount
@@ -159,7 +159,7 @@ cd ~/environment/aws-swb-cloud9-init/hosting-account/
 * Note: This step is dependent on the `STAGE_NAME` environment variable being set, from Step 2.1.1
 * Note: If you want to use the same account as the AWS Cloud9 is running, retrieve the account id by running:
 
-```
+```bash
 aws sts get-caller-identity | jq -r '.Account'
 ```
  
