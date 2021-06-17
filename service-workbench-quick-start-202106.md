@@ -150,7 +150,7 @@ In this section, you will set up your Service Workbench instance with accounts, 
 
 **Compute Hosting** accounts are the accounts in which research compute resources are deployed, and which are responsible for the billing of those resources. In this deployment, the hosting account will be the same as the deployment account.
 
-1.	Enter the host account script directory, and run the following command to create an AWS CloudFormation stack named `aws-hosting-account-${ACCOUNT_ID}-stack`, using the 12-digit account number that was passed to the script.
+1.	Enter the host account script directory, and run the following command to create an AWS CloudFormation stack named `swb-hosting-compute-$HOSTINGACCOUNT_ARG-$STAGE_NAME-stack`, using the 12-digit account number that was passed to the script, and the `STAGE_NAME` variable.
 
 ```bash
 # Go to our hosting account script dir
