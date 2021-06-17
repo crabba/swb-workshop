@@ -39,6 +39,7 @@ To deploy and configure Service Workbench on AWS, you will need a development en
 
 This step clones a repository of utility scripts, and runs the script `tools-init.sh` to install all libraries and tools required to deploy Service Workbench on AWS. The script also enlargens the default 10 GB instance store provided with Cloud9.
 
+1. Open a new Terminal in Cloud9
 1. Clone the Service Workbench on AWS using Cloud9 boostrap repository
 
 ```
@@ -63,6 +64,8 @@ source tools-init.sh
 ```
 
 ### 1.4 (Optional) Access platform reference documentation
+A static version of the Service Workbench documentation is available [here](http://swb-documentation.s3-website-us-east-1.amazonaws.com/introduction/)
+
 The documentation is available via [Docusaurus](https://docusaurus.io/), which runs as a web server. To build and view the documentation, either clone the Service Workbench source code to your local machine, or modify the security group of your Cloud9 instance as described in this [documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/authorizing-access-to-an-instance.html)
 
 ```
@@ -250,7 +253,7 @@ In this section, we will make one of the ﬁve default workspace types available
     1. Select **SageMaker Notebook**
     1. Select **Import**
 1.	Add a workspace conﬁguration:
-    1. Select **Edit** in the SageMaker Notebook workspace type
+    1. Select **Import Workspace Type** in the SageMaker Notebook workspace type, to proceed to Configurations
     1. Select **Conﬁgurations**, then **Add Conﬁguration**
     1. Fill in the **Basic Information**:
         * All ﬁelds are required
@@ -260,7 +263,9 @@ In this section, we will make one of the ﬁve default workspace types available
         * In **Roles Allowed**, select **Admin** and **Researcher**
     1. Fill in **Input Parameters**:
         * For most ﬁelds, begin typing the name of the ﬁeld, and select the autocomplete option of that name.
-        * For **Instance type**, use **ml.t3.medium**
+            * For **AccessFromCIDRBlock**, begin typing `cidr` to autocomplete
+            * For **Instance type**, use **ml.t3.medium**
+            * For **AutoStopIdleTimeInMinutes**, enter a numerical value
     1. Add tags, if required, and select **Done** to create the conﬁguration
 1.	Under **Workspace Types**, select **Approve** to make this product available for deployment by users
  
@@ -301,4 +306,4 @@ Workspaces are created from within the Studies interface, after selecting the st
 ## 4. Post-Deployment Tasks
 Once your basic installation is complete, you can stop or terminate the AWS Cloud9 instance that you used to deploy Service Workbench on AWS, as the instance is only needed to for the deployment process. Stopping the instance, rather than terminating it, is recommended if you intend to update your Service Workbench on AWS deployment as the platform is updated.
 
-For creating a Service Workbench on AWS deployment that can be demonstrated to researchers, it’s recommended that you create workspace conﬁgurations for all of the default workspace types (EC2 Windows, EC2 Linux, EMR, and R Studio on EC2).
+For creating a Service Workbench on AWS deployment that can be demonstrated to researchers, it’s recommended that you create workspace conﬁgurations for several of the default workspace types.
