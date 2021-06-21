@@ -166,45 +166,47 @@ cd ~/environment/aws-swb-cloud9-init/hosting-account/
 aws sts get-caller-identity | jq -r '.Account'
 ```
  
-2. The parameters passed to the stack are described below, but can also be seen on the `hosting-account-cfn-args-${STAGE_NAME}.json` inside the `aws-swb-cloud9-init` directory.
+1. (For information only.) The parameters passed to the stack are described below, but can also be seen on the `hosting-account-cfn-args-${STAGE_NAME}.json` inside the `aws-swb-cloud9-init` directory.
 
-| Parameter Name | Value |
-| --- | --- |
-| Namespace | Stage name |
-| CentralAccountId | For the quickstart, this will be the current AWS Cloud9 AccountId |
-| ExternalId | Workbench |
-| VpcCidr | Default (10.0.0.0/16) |
-| VpcPublicSubnet1Cidr | Default (10.0.0.0/19) |
-| ApiHandlerArn | ApiHandlerRoleArn created in the first step |
-| LaunchConstraintPolicyPreﬁx | Default (*) |
-| LaunchConstraintRolePrefix | Default (*) |
-| WorkﬂowRoleArn | WorkﬂowLoopRunnerRoleArn created in the first step |
+| Parameter Name               | Value                                                   |
+| ---------------------------- | ------------------------------------------------------- |
+| Namespace                    | Stage name                                              |
+| CentralAccountId             | The current AWS Cloud9 AccountId                        |
+| ExternalId                   | `workbench`                                             |
+| VpcCidr                      | Default (10.0.0.0/16)                                   |
+| VpcPublicSubnet1Cidr         | Default (10.0.0.0/19)                                   |
+| ApiHandlerArn                | **ApiHandlerRoleArn** created in the first step         |
+| LaunchConstraintPolicyPreﬁx  | Default (*)                                             |
+| LaunchConstraintRolePrefix   | Default (*)                                             |
+| WorkﬂowRoleArn               | **WorkﬂowLoopRunnerRoleArn** created in the first step  |
+|                              |                                                         |
  
-4. Deploy the stack from the CloudFormation console. The Outputs of the stack will contain values similar to:
+2. Deploy the stack from the CloudFormation console. The Outputs of the stack will contain values similar to:
 
-| Key | Value |
-| --- | --- |
-| CrossAccountEnvMgmtRoleArn | arn:aws:iam::0000:role/stagename-stage-xacc-env-mgmt |
-| CrossAccountExecutionRoleArn | arn:aws:iam::0000:role/stagename-stage-cross-account-role |
-| EncryptionKeyArn | arn:aws:kms:us-east-2:0000:key/f00-f00-f00 |
-| VPC | vpc-f00f00 |
-| VpcPublicSubnet1 | subnet-f00f00 |
+| Key                          | Value                                               |
+| ---------------------------- | --------------------------------------------------- |
+| CrossAccountEnvMgmtRoleArn   | `arn:aws:iam::0000:role/<stage>-xacc-env-mgmt`      |
+| CrossAccountExecutionRoleArn | `arn:aws:iam::0000:role/<stage>-cross-account-role` |
+| EncryptionKeyArn             | `arn:aws:kms:us-east-2:0000:key/f00-f00-f00`        |
+| VPC                          | `vpc-f00f00`                                        |
+| VpcPublicSubnet1             | `subnet-f00f00`                                     |
 
-5. In the website of your Service Workbench deployment, select “Accounts” (left navigation), “AWS Accounts” (tab), “Add Account” (button). Fill in values as follows:
+3. In the website of your Service Workbench deployment, select “Accounts” (left navigation), “AWS Accounts” (tab), “Add Account” (button). Fill in values as follows:
 
-| Field | Value |
-| --- | --- |
-| Account Name | As desired |
-| AWS Account ID | 12-digit ID of imported account |
-| Role ARN | CrossAccountExecutionRoleArn value |
-| AWS Service Catalog Role Arn | CrossAccountEnvMgmtRoleArn value |
-| External ID | As speciﬁed (default: workbench) |
-| Description | As desired |
-| VPC ID | VPC value |
-| Subnet ID | VpcPublicSubnet1 value |
-| KMS Encryption Key ARN | EncryptionKeyArn value |
+| Field                        | Value                                  |
+| ---------------------------- | -------------------------------------- |
+| Account Name                 | As desired                             |
+| AWS Account ID               | 12-digit ID of imported account        |
+| Role ARN                     | **CrossAccountExecutionRoleArn** value |
+| AWS Service Catalog Role Arn | **CrossAccountEnvMgmtRoleArn** value   |
+| External ID                  | As speciﬁed (default: `workbench`)     |
+| Description                  | As desired                             |
+| VPC ID                       | **VPC** value                          |
+| Subnet ID                    | **VpcPublicSubnet1** value             |
+| KMS Encryption Key ARN       | **EncryptionKeyArn** value             |
+|                              |                                        |
 
-Verify that the account now appears under ‘AWS Accounts’.
+Verify that the account now appears under **AWS Accounts**.
 
 ### 3.2 Create default index, project, and admin account
 
