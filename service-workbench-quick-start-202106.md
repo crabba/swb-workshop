@@ -326,7 +326,21 @@ In this step, we will create a Data Source, which is a study hosted in a Storage
     * **Study Folder**: The full prefix (path) of the folder in S3, in the form `/some/path`.  If using the top-level of the bucket, enter `/`.
     * **Project**: Select the previously-existing Project with which to associate this study
     * **Type**: As with a Study, **My Study** for private and **Organization** for (potentially) shared
-    * **Access**: 
+    * **Access**: Select the users you created earlier, and give them read-only or read-write access to the new study
+    * **Admin**: Select your admin user
+1. Select **Save & Continue** 
+1. Click **Next** to proceed to the **Register Studies** screen. 
+    * This screen displays the contents of the CloudFormation template, detailing the permissions granted when the stack is launched. 
+    * As we are launching the CloudFormation stack in the same account as we installed Service Workbench, there is a shortcut button **I have admin access** available.  Select this button to launch the stack in the account in which you are currently logged in.
+    * Select **Stack Create** as we are going to create the stack for the first time (for subsequent updates, select Stack Update)
+    * Click on **Create Stack** to open the CloudFormation console with the template pre-populated
+    * Click **Next** to proceed through the CloudFormation screens
+    * On the final screen, select the box to acknowledge that AWS CloudFormation might create IAM resources with custom names, and click **Create Stack**
+    * While the CloudFormation stack is deploying, the Study will display **Pending** in the **Studies** tab of the Data Sources screen.  The status will change to **Available** when complete.
+1. Return to the **Studies** tab on the left navigation, and check for the study just created
+    * Expand the **Permissions** drop-down, and edit using the pencil icon to add your users as read-only or read-write users of the study.  Note that the Admin user of a study does not automatically have access to read or write to the study, and must be added.
+    * Click **Submit** to save the permissions
+1. This new Study in an external bucket is now available to be mounted on a new Workspace, and behaves the same as a Study created in the main account bucket
 
 ---
 # 4. Post-Deployment Tasks
