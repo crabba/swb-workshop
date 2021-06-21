@@ -1,21 +1,21 @@
 # Service Workbench Quick Start Guide
 June, 2021
 
-## 1. Prerequisites
+# 1. Prerequisites
 
 Before getting started with the installation of Service Workbench on AWS, you should ensure that you have the requisite expertise, and have completed the pre-installation steps outlined below.
 1. Practical knowledge of core AWS services (EC2, IAM) and Linux command line.
 1. Have administrator access to an AWS account into which you can deploy Service Workbench on AWS.
 
 
-### 1.1 Enable AWS Cost Explorer
+## 1.1 Enable AWS Cost Explorer
 
 1. Enable AWS Cost Explorer by visiting the AWS Cost Management service for the account that you will be deploying Service Workbench on AWS into. 
 1. (After 24h) Activate the following cost allocation tags in the AWS Billing and Cost Management Dashboard to enable billing information within Service Workbench on AWS.  These tags appear after enabling the AWS Cost Explorer.
 
     • `Proj`, `Env`, `CreatedBy`
 
-### 1.2	Create a Development Environment using AWS Cloud9
+## 1.2	Create a development environment using AWS Cloud9
 
 To deploy and configure Service Workbench on AWS, you will need a development environment. To avoid any confusion with your local environment, we will use AWS Cloud9, which is a cloud-based integrated development environment (IDE) that lets you write, run, and debug your code with just a browser. 
 
@@ -35,7 +35,7 @@ To deploy and configure Service Workbench on AWS, you will need a development en
 1. Click on **Next Step**
 1. Review the configuration, and click on **Create Environment**
 
-### 1.3 Install required tools and utilities
+## 1.3 Install required tools and utilities
 
 This step clones a repository of utility scripts, and runs the script `tools-init.sh` to install all libraries and tools required to deploy Service Workbench on AWS. The script also enlargens the default 10 GB instance store provided with Cloud9.
 
@@ -63,7 +63,7 @@ cd aws-swb-cloud9-init
 source tools-init.sh
 ```
 
-### 1.4 (Optional) Access platform reference documentation
+## 1.4 (Optional) Access platform reference documentation
 A static version of the Service Workbench documentation is available [here](http://swb-documentation.s3-website-us-east-1.amazonaws.com/introduction/)
 
 The documentation is available via [Docusaurus](https://docusaurus.io/), which runs as a web server. To build and view the documentation, either clone the Service Workbench source code to your local machine, or modify the security group of your Cloud9 instance as described in this [documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/authorizing-access-to-an-instance.html)
@@ -75,11 +75,11 @@ yarn start --port 3000 --host 0.0.0.0
 ```
 
 ---
-## 2. Installing and configuring Service Workbench on AWS
+# 2. Installing and configuring Service Workbench on AWS
 
 This section describes how to deploy Service Workbench on AWS using the AWS Cloud9 instance that we created in the pre-requisites section. Alternatively, it is possible to deploy from a local computer using local AWS CLI credentials. Keep in mind that tools and libraries installed in the previous section might be incompatible with your local system.
 
-### 2.1 Creating a new Service Workbench Configuration
+## 2.1 Creating a new Service Workbench configuration
 
 In this section, you will install Service Workbench components into your AWS account. Once the last step is underway, you can proceed to the next section (Install AMIs for EC2-based workspaces) to run both processes simultaneously.
 
@@ -114,7 +114,7 @@ cd ~/environment/service-workbench-on-aws/
 ./scripts/environment-deploy.sh ${STAGE_NAME}
 ```
 
-5. Once the above step has completed, copy the root account password and website URL for later use.
+5. Once the above step has completed, copy from its output the **Website URL** and **Root Password** for later use.
 
     * Note: To retrieve this information again, run this command:
         * `scripts/get-info.sh ${STAGE_NAME}`
@@ -122,7 +122,7 @@ cd ~/environment/service-workbench-on-aws/
 6. Using the URL and root password from above, visit the Service Workbench on AWS website and log in using user **root**.
 
 
-### 2.2 Install AMIs for EC2-based workspaces
+## 2.2 Install AMIs for EC2-based workspaces
 
 To use EC2-based workspaces, you must ﬁrst install Amazon EC2 AMIs for these workspaces. This process may be run concurrently with the previous section (while `environment-deploy.sh` is running). To run both simultaneously, open a new terminal in Cloud9 (check that the environment variable `STAGE_NAME` is set correctly in the new terminal)
 
@@ -142,15 +142,15 @@ swb-ami-list
 Note: This alias is defined in your `~/.bashrc file` as a shortcut to query the Amazon EC2 API. You should see AMIs for **EC2-LINUX**, **EC2-RSTUDIO**, **EC2-WINDOWS**, and **EMR**.
 
 ---
-## 3. Conﬁguring Accounts
+# 3. Conﬁguring Accounts
 
-In this section, you will set up your Service Workbench instance with accounts, workspaces, and other features, that can be used for evaluating the main Service Workbench features. You can perform the steps in this section after logging into your Service Workbench web interface as root for the ﬁrst time (the veriﬁcation step of the Install the Service Workbench on AWS platform section above).
+In this section, you will set up your Service Workbench instance with accounts, workspaces, and other features, that can be used for evaluating the main Service Workbench features. You can perform the steps in this section after logging into your Service Workbench web interface as root for the ﬁrst time (see Section 2.1.6, above).
 
-### 3.1 Compute Hosting account setup
+## 3.1 Compute Hosting account setup
 
 **Compute Hosting** accounts are the accounts in which research compute resources are deployed, and which are responsible for the billing of those resources. In this deployment, the hosting account will be the same as the deployment account.
 
-1.	Enter the host account script directory, and run the following command to create an AWS CloudFormation stack named `swb-hosting-compute-$HOSTINGACCOUNT_ARG-$STAGE_NAME-stack`, using the 12-digit account number that was passed to the script, and the `STAGE_NAME` variable.
+1.	In a terminal window, run the following commands to create an AWS CloudFormation stack named `aws-hosting-account-<HOSTINGACCOUNT>-stack`. Call the script using the 12-digit account number of the Compute Hosting account (which in this case is the same account as Service Workbench was deployed into).
 
 ```bash
 # Go to our hosting account script dir
@@ -160,13 +160,13 @@ cd ~/environment/aws-swb-cloud9-init/hosting-account/
 ```
 
 * Note: This step is dependent on the `STAGE_NAME` environment variable being set, from Step 2.1.1
-* Note: If you want to use the same account as the AWS Cloud9 is running, retrieve the account id by running:
+* Note: You can retrieve the current account number from the command line by running:
 
 ```bash
 aws sts get-caller-identity | jq -r '.Account'
 ```
  
-1. (For information only.) The parameters passed to the stack are described below, but can also be seen on the `hosting-account-cfn-args-${STAGE_NAME}.json` inside the `aws-swb-cloud9-init` directory.
+2. (For information only.) The parameters passed to the stack are described below, but can also be seen on the `hosting-account-cfn-args-${STAGE_NAME}.json` inside the `aws-swb-cloud9-init` directory.
 
 | Parameter Name               | Value                                                   |
 | ---------------------------- | ------------------------------------------------------- |
@@ -181,7 +181,7 @@ aws sts get-caller-identity | jq -r '.Account'
 | WorkﬂowRoleArn               | **WorkﬂowLoopRunnerRoleArn** created in the first step  |
 |                              |                                                         |
  
-2. Deploy the stack from the CloudFormation console. The Outputs of the stack will contain values similar to:
+3. In the AWS CloudFormation console, locate and run the stack `aws-hosting-account-<HOSTINGACCOUNT>-stack`. The Outputs of the stack will contain values similar to:
 
 | Key                          | Value                                               |
 | ---------------------------- | --------------------------------------------------- |
@@ -191,7 +191,7 @@ aws sts get-caller-identity | jq -r '.Account'
 | VPC                          | `vpc-f00f00`                                        |
 | VpcPublicSubnet1             | `subnet-f00f00`                                     |
 
-3. In the website of your Service Workbench deployment, select “Accounts” (left navigation), “AWS Accounts” (tab), “Add Account” (button). Fill in values as follows:
+4. In the website of your Service Workbench deployment, select “Accounts” (left navigation), “AWS Accounts” (tab), “Add Account” (button). Add an accoubt by filling in values as follows, using the output of the CloudFormation stack:
 
 | Field                        | Value                                  |
 | ---------------------------- | -------------------------------------- |
@@ -208,7 +208,7 @@ aws sts get-caller-identity | jq -r '.Account'
 
 Verify that the account now appears under **AWS Accounts**.
 
-### 3.2 Create default index, project, and admin account
+## 3.2 Create default index, project, and admin account
 
 Service Workbench supports a three-tier hierarchy for managing how research resources are deployed and billed.
 
@@ -245,11 +245,9 @@ In this section, you will create an index, project, and a local user to be the a
     1. **Save**
 1.	Log out of the root account and log back in using your new admin user
 
-### 3.3	Conﬁguring Workspaces and Studies
+## 3.3 Create a Workspace Conﬁguration
 
 In this section, we will make one of the ﬁve default workspace types available for researchers. Workspace types appear in Service Workbench on AWS after they have been conﬁgured in AWS Service Catalog (done during the installation process). A workspace type is made available for deployment by a user by creating a Conﬁguration, which deﬁnes the size of the resource deployed as well as which roles that can deploy the conﬁguration.
-
-### 3.4 Create a Workspace Conﬁguration
 
 1.	Navigate to Workspace Types
     1. Select **SageMaker Notebook**
@@ -271,7 +269,7 @@ In this section, we will make one of the ﬁve default workspace types available
     1. Add tags, if required, and select **Done** to create the conﬁguration
 1.	Under **Workspace Types**, select **Approve** to make this product available for deployment by users
  
-### 3.5 Create a Study
+## 3.4 Create a Study
 
 Studies are storage locations, appearing to users as ﬁle systems mounted within their workspace. Each study is implemented as a policy-protected path in the single S3 bucket storing all data in this Service Workbench on AWS deployment. 
 
@@ -287,7 +285,7 @@ There are three classes of Studies: **My Study**, which are private to the user;
 
 Note: Studies created using My Study cannot be shared with other users. Therefore, it’s recommended that users create Organization studies, which can be single-user access, or shared, if there is a possibility that the study data would be shared in the future.
 
-### 3.6 Create and deploy a Workspace
+## 3.5 Create and deploy a Workspace
 
 Workspaces are created from within the Studies interface, after selecting the studies to be mounted to the workspace.  If a workspace is created from the Workspaces interface, it will not have access to any studies.
 
@@ -305,7 +303,33 @@ Workspaces are created from within the Studies interface, after selecting the st
 1. Open **Workspaces** in the left sidebar
     * Select **Connect** to open a new tab with a Jupyter Notebook running on the SageMaker workspace
  
-## 4. Post-Deployment Tasks
+## 3.6 Create a Study hosted on an external bucket
+
+In this step, we will create a Data Source, which is a study hosted in a Storage Hosting Account rather than in the main account of Service Workbench.  In this case, we will be using the same account as a main account, Compute Hosting Account, and Storage Hosting Account, but the procedure remains the same regardless of the account number used.
+
+1. In your AWS account, identify a bucket to use for storage, and within that bucket, a folder to mount as a Study.
+1. Open **Data Sources** and select **Register Studies**
+1. Read the instructions and select **Next**
+1. Fill in the values as follows:
+    * **AWS Account ID**: The ID of the Storage Hosting Account (here, the same as the main account)
+    * **Region**: Use the same region as Service Workbench is deployed in
+    * **Account Name**: A descriptive name, for display purposes only
+    * **Contact Information**: Optional. Used to contact the Study owner by the end user, who may be in a different account.
+    * **Bucket Name**: Exact name of the S3 bucket
+    * **Bucket Region**: Use the same region as Service Workbench is deployed in
+    * **Bucket Default Encryption**: Match the setting of the S3 bucket (for default buckets, this is **Disabled**)
+    * **KMS Arn**: Use if bucket encryption was selected
+1. Select **Add Study**
+1. Under **Studies**, fill in the values as follows:
+    * **Study Id**: A unique identifier, which will be visible to the end user
+    * **Study Name**: A descriptive name for the study
+    * **Study Folder**: The full prefix (path) of the folder in S3, in the form `/some/path`.  If using the top-level of the bucket, enter `/`.
+    * **Project**: Select the previously-existing Project with which to associate this study
+    * **Type**: As with a Study, **My Study** for private and **Organization** for (potentially) shared
+    * **Access**: 
+
+---
+# 4. Post-Deployment Tasks
 Once your basic installation is complete, you can stop or terminate the AWS Cloud9 instance that you used to deploy Service Workbench on AWS, as the instance is only needed to for the deployment process. Stopping the instance, rather than terminating it, is recommended if you intend to update your Service Workbench on AWS deployment as the platform is updated.
 
 For creating a Service Workbench on AWS deployment that can be demonstrated to researchers, it’s recommended that you create workspace conﬁgurations for several of the default workspace types.
