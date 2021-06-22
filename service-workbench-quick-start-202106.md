@@ -316,7 +316,7 @@ In this step, we will create a Data Source, which is a study hosted in a Storage
     * **Account Name**: A descriptive name, for display purposes only
     * **Contact Information**: Optional. Used to contact the Study owner by the end user, who may be in a different account.
     * **Bucket Name**: Exact name of the S3 bucket
-    * **Bucket Region**: Use the same region as Service Workbench is deployed in
+    * **Bucket Region**: The Region of the s3 bucket
     * **Bucket Default Encryption**: Match the setting of the S3 bucket (for default buckets, this is **Disabled**)
     * **KMS Arn**: Use if bucket encryption was selected
 1. Select **Add Study**
@@ -338,7 +338,7 @@ In this step, we will create a Data Source, which is a study hosted in a Storage
     * On the final screen, select the box to acknowledge that AWS CloudFormation might create IAM resources with custom names, and click **Create Stack**
     * While the CloudFormation stack is deploying, the Study will display **Pending** in the **Studies** tab of the Data Sources screen.  The status will change to **Available** when complete.
 1. Return to the **Studies** tab on the left navigation, and check for the study just created
-    * Expand the **Permissions** drop-down, and edit using the pencil icon to add your users as read-only or read-write users of the study.  Note that the Admin user of a study does not automatically have access to read or write to the study, and must be added.
+    * Once the study is listed as available, expand the **Permissions** drop-down, and edit using the pencil icon to add your users as read-only or read-write users of the study.  Note that the Admin user of a study does not automatically have access to read or write to the study, and must be added.
     * Click **Submit** to save the permissions
 1. This new Study in an external bucket is now available to be mounted on a new Workspace, and behaves the same as a Study created in the main account bucket
 
