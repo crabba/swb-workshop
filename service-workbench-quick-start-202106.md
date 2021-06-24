@@ -57,6 +57,7 @@ cd aws-swb-cloud9-init
     * Installs **nvm** (Node Version Manager), and uses this to install the latest version of **Node**.
     * Installs the Node software **serverless**, **pnpm**, **hygen**, **yarn**, **docusaurus**.
     * Installs **Packer**, used to build custom AMI images.
+    * Installs the **Go language**, used to build the S3 synchronizer for Windows instances.
 
 ```bash
 # From directory ~/environment/aws-swb-cloud9-init
