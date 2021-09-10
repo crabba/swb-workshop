@@ -82,15 +82,16 @@ This section describes how to deploy Service Workbench on AWS using the AWS Clou
 
 ## 2.1 Creating a new Service Workbench configuration
 
-In this section, you will install Service Workbench components into your AWS account. Once the last step is underway, you can proceed to the next section (Install AMIs for EC2-based workspaces) to run both processes simultaneously.
+In this section, you will install Service Workbench components into your AWS account. 
+
+> :information_source: - Once the last step is underway, you can proceed to the next section (Install AMIs for EC2-based workspaces) to run both processes simultaneously.
 
 1. In the terminal, export the **Stage Name** that is going to be used in the deployment process, for this guide we will be using `demo` as the Stage Name.
 
     * _Note: The stage name is included in the name of the Amazon S3 storage bucket, so must be Amazon S3-compatible (lower-case characters, numbers, periods, and dashes), and fewer than 10 characters._
 
 ```bash
-echo 'export STAGE_NAME=demo' >> ~/.bashrc
-source ~/.bashrc
+echo 'export STAGE_NAME=demo' >> ~/.bashrc && source ~/.bashrc
 ```
 
 2. Create a copy of the example configuration that comes bundled with the repository.
@@ -101,7 +102,9 @@ cd ~/environment/service-workbench-on-aws/main/config/settings
 cp example.yml ${STAGE_NAME}.yml
 ```
 
-3. Open the configuration file `demo.yml` in the Cloud9 editor, and uncomment and set values for:
+3. Open the configuration file `demo.yml` in the Cloud9 editor, and **uncomment (by removing the leading #)** and set values for:
+
+> :warning: - Make sure you save the file after editing the values below. 
 
     * `solutionName`: The solutionName is used in Amazon S3 bucket names so must be Amazon S3-compatible (lower-case characters, numbers, periods, and dashes)
     * `awsRegion`: The region code (eg `us-east-1`) you will be using for the deployment. Make sure to use the same region when you are using the AWS Console.  Region codes may be looked up here: [Regional Endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html)
@@ -111,8 +114,7 @@ cp example.yml ${STAGE_NAME}.yml
     * Note: This takes up to 15 minutes and can be ran in parallel with the AMI installation step, below.
 
 ```bash
-cd ~/environment/service-workbench-on-aws/
-./scripts/environment-deploy.sh ${STAGE_NAME}
+cd ~/environment/service-workbench-on-aws/ && ./scripts/environment-deploy.sh ${STAGE_NAME}
 ```
 
 5. Once the above step has completed, copy from its output the **Website URL** and **Root Password** for later use.
@@ -127,11 +129,10 @@ cd ~/environment/service-workbench-on-aws/
 
 To use EC2-based workspaces, you must ﬁrst install Amazon EC2 AMIs for these workspaces. This process may be run concurrently with the previous section (while `environment-deploy.sh` is running). To run both simultaneously, open a new terminal in Cloud9 (check that the environment variable `STAGE_NAME` is set correctly in the new terminal)
 
-1. In the terminal, run the following command to start the Amazon EC2 AMI generation
+1. **In a new the terminal**, run the following command to start the Amazon EC2 AMI generation
  
 ```bash
-cd ~/environment/service-workbench-on-aws/main/solution/machine-images/ 
-pnpx sls build-image -s ${STAGE_NAME}
+cd ~/environment/service-workbench-on-aws/main/solution/machine-images/ && pnpx sls build-image -s ${STAGE_NAME}
 ```
 
 2. Once the process has been completed, you can verify that the Amazon EC2 AMI were created by running:
