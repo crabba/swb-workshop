@@ -127,7 +127,7 @@ cd ~/environment/service-workbench-on-aws/ && ./scripts/environment-deploy.sh ${
 
 To use EC2-based workspaces, you must ﬁrst install Amazon EC2 AMIs for these workspaces. This process may be run concurrently with the previous section (while `environment-deploy.sh` is running). To run both simultaneously, open a new terminal in Cloud9 (check that the environment variable `STAGE_NAME` is set correctly in the new terminal)
 
-1. **In a new the terminal**, run the following command to start the Amazon EC2 AMI generation
+1. **In a new terminal**, run the following command to start the Amazon EC2 AMI generation
  
 ```bash
 cd ~/environment/service-workbench-on-aws/main/solution/machine-images/ && pnpx sls build-image -s ${STAGE_NAME}
