@@ -84,7 +84,7 @@ This section describes how to deploy Service Workbench on AWS using the AWS Clou
 
 In this section, you will install Service Workbench components into your AWS account. 
 
-> :information_source: - Once the last step is underway, you can proceed to the next section (Install AMIs for EC2-based workspaces) to run both processes simultaneously.
+> :information_source: Once the last step is underway, you can proceed to the next section (Install AMIs for EC2-based workspaces) to run both processes simultaneously.
 
 1. In the terminal, export the **Stage Name** that is going to be used in the deployment process, for this guide we will be using `demo` as the Stage Name.
 
@@ -103,9 +103,10 @@ cp example.yml ${STAGE_NAME}.yml
 ```
 
 3. Open the configuration file `demo.yml` in the Cloud9 editor, and **uncomment (by removing the leading #)** and set values for:   
-:warning: - Make sure you save the file after editing the values below.  
-    * `solutionName`: The solutionName is used in Amazon S3 bucket names so must be Amazon S3-compatible (lower-case characters, numbers, periods, and dashes)
-    * `awsRegion`: The region code (eg `us-east-1`) you will be using for the deployment. Make sure to use the same region when you are using the AWS Console.  Region codes may be looked up here: [Regional Endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html)
+> :warning: Make sure you save the file after editing the values below.  
+
+  * `solutionName`: The solutionName is used in Amazon S3 bucket names so must be Amazon S3-compatible (lower-case characters, numbers, periods, and dashes)
+  * `awsRegion`: The region code (eg `us-east-1`) you will be using for the deployment. Make sure to use the same region when you are using the AWS Console.  Region codes may be looked up here: [Regional Endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html)
 
 4. In the terminal, run the `environment-deploy.sh` script to complete the installation, specifying the stage name as a parameter.
 
