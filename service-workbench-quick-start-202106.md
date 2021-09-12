@@ -344,7 +344,90 @@ In this step, we will create a Data Source, which is a study hosted in a Storage
 1. This new Study in an external bucket is now available to be mounted on a new Workspace, and behaves the same as a Study created in the main account bucket
 
 ---
-# 4. Post-Deployment Tasks
-Once your basic installation is complete, you can stop or terminate the AWS Cloud9 instance that you used to deploy Service Workbench on AWS, as the instance is only needed to for the deployment process. Stopping the instance, rather than terminating it, is recommended if you intend to update your Service Workbench on AWS deployment as the platform is updated.
+# 4. Cleaning up your environment
 
-For creating a Service Workbench on AWS deployment that can be demonstrated to researchers, it’s recommended that you create workspace conﬁgurations for several of the default workspace types.
+Cleaning up the resources created should be done in reversal of creation order. We will be using the same AWS Cloud9 originally used to deploy the workshop.
+
+## 4.1 Stopping all workspaces
+Go to each of your running workspaces and click on **Terminate**, wait until their status show Terminated.
+
+## 4.2 Removing Compute hosting accounts
+We'll start removing Compute hosting accounts (eg: all `swb-hosting-compute-<HOSTINGACCOUNT>-<STAGE_NAME>-stack` stacks). 
+
+1. On a **new terminal window**: 
+
+```
+aws cloudformation list-stacks \
+   --query "StackSummaries[?contains(StackName, 'swb-hosting-compute')].{Stack:StackName}" \
+   --region $AWS_REGION --stack-status-filter CREATE_COMPLETE \
+   --output text
+```
+
+2. This will output one or more stack named `swb-hosting-compute-<HOSTINGACCOUNT>-<STAGENAME>-stack`. Now for each stack, execute:
+
+```
+aws cloudformation delete-stack --stack-name STACKNAME-FROM-PREVIOUS-STEP
+```
+
+2.1 *(Optionally)* if you wan't to wait for the stack deletion before moving forward, you can use a cloudformation waiter.
+```
+aws cloudformation wait stack-delete-complete --stack-name STACKNAME-FROM-PREVIOUS-STEP
+```
+
+## 4.3 Deregister sample created AMIs
+
+1. List all the created AMIs using the `alias` that we created earlier.
+```
+swb-ami-list
+```
+2. For **each Image-Id** listed on the second column, execute:
+```
+aws ec2 deregister-image --image-id <AMI-ID>
+```
+3. After executing them, use the alias again to check for the removal:
+```
+swb-ami-list
+```
+
+## 4.4 Undeploy the solution
+
+1. Let's undeploy Service Workbench Solution using the buil-in delete script:
+```
+cd ~/environment/service-workbench-on-aws/ && ./scripts/environment-delete.sh ${STAGE_NAME}
+```
+2. Type the stage name into the confirmation box and wait for the process to finish.
+3. Answer `Y` to the SSM Parameters prompts (at least 2)
+4. You will see this message once the process finishes, prompting you to remove anything that might be left over manually:
+```
+*******************************************************************
+*****      ----- ENVIRONMENT DELETED SUCCESSFULLY  🎉!! -----     *****
+*******************************************************************
+You still have to remove the following elements :
+  -[Edge lambda]: It can be deleted manually in 1 hour,
+     see it at https://console.aws.amazon.com/lambda
+  -[Consumer Accounts]: The resources deployed on your
+     AWS consumer accounts will still be there.
+     see at 
+       https://console.aws.amazon.com/ec2/v2/home,
+       https://console.aws.amazon.com/sagemaker/home
+```       
+
+## 4.5 Removing AWS Cloud9 
+Lastly, let's remove AWS Cloud9 using the **AWS CLI**.
+
+1. On a **new terminal window**: 
+
+```
+aws cloudformation list-stacks \
+   --query "StackSummaries[?contains(StackName, 'c9-swb')].{Stack:StackName}" \
+   --region $AWS_REGION --stack-status-filter CREATE_COMPLETE \
+   --output text
+```
+
+2. This will output one stack named `aws-cloud0-c9-swb-dev-XXXXXXXXXXXXXX`. Now execute:
+
+```
+aws cloudformation delete-stack --stack-name STACKNAME-FROM-PREVIOUS-STEP
+```
+
+3. As soon as you execute the statement above, the AWS Cloud9 instance will disconnect.
