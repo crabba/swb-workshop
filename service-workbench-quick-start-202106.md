@@ -151,7 +151,7 @@ In this section, you will set up your Service Workbench instance with accounts, 
 
 **Compute Hosting** accounts are the accounts in which research compute resources are deployed, and which are responsible for the billing of those resources. In this deployment, the hosting account will be the same as the deployment account.
 
-1.	In a terminal window, run the following commands to create an AWS CloudFormation stack named `aws-hosting-account-<HOSTINGACCOUNT>-stack`. Call the script using the 12-digit account number of the Compute Hosting account (which in this case is the same account as Service Workbench was deployed into).
+1.	In a terminal window, run the following commands to create an AWS CloudFormation stack named `swb-hosting-compute-<HOSTINGACCOUNT>-<STAGE_NAME>-stack`. Call the script using the 12-digit account number of the Compute Hosting account (which in this case is the same account as Service Workbench was deployed into).
 
 ```bash
 # Go to our hosting account script dir
@@ -182,7 +182,7 @@ aws sts get-caller-identity | jq -r '.Account'
 | WorkﬂowRoleArn               | **WorkﬂowLoopRunnerRoleArn** created in the first step  |
 |                              |                                                         |
  
-3. In the AWS CloudFormation console, locate and run the stack `aws-hosting-account-<HOSTINGACCOUNT>-stack`. The Outputs of the stack will contain values similar to:
+3. In the AWS CloudFormation console, locate and run the stack `swb-hosting-compute-<HOSTINGACCOUNT>-<STAGE_NAME>-stack`. The Outputs of the stack will contain values similar to:
 
 | Key                          | Value                                               |
 | ---------------------------- | --------------------------------------------------- |
