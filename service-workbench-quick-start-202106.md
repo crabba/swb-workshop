@@ -86,15 +86,16 @@ This section describes how to deploy Service Workbench on AWS using the AWS Clou
 
 ## 2.1 Creating a new Service Workbench configuration
 
-In this section, you will install Service Workbench components into your AWS account. Once the last step is underway, you can proceed to the next section (Install AMIs for EC2-based workspaces) to run both processes simultaneously.
+In this section, you will install Service Workbench components into your AWS account. 
+
+> :information_source: Once the last step is underway, you can proceed to the next section (Install AMIs for EC2-based workspaces) to run both processes simultaneously.
 
 1. In the terminal, export the **Stage Name** that is going to be used in the deployment process, for this guide we will be using `demo` as the Stage Name.
 
     * _Note: The stage name is included in the name of the Amazon S3 storage bucket, so must be Amazon S3-compatible (lower-case characters, numbers, periods, and dashes), and fewer than 10 characters._
 
 ```bash
-echo 'export STAGE_NAME=demo' >> ~/.bashrc
-source ~/.bashrc
+echo 'export STAGE_NAME=demo' >> ~/.bashrc && source ~/.bashrc
 ```
 
 2. Create a copy of the example configuration that comes bundled with the repository.
@@ -105,18 +106,18 @@ cd ~/environment/service-workbench-on-aws/main/config/settings
 cp example.yml ${STAGE_NAME}.yml
 ```
 
-3. Open the configuration file `demo.yml` in the Cloud9 editor, and uncomment and set values for:
+3. Open the configuration file `demo.yml` in the Cloud9 editor, and **uncomment (by removing the leading #)** and set values for:   
+> :warning: Make sure you save the file after editing the values below.  
 
-    * `solutionName`: The solutionName is used in Amazon S3 bucket names so must be Amazon S3-compatible (lower-case characters, numbers, periods, and dashes)
-    * `awsRegion`: The region code (eg `us-east-1`) you will be using for the deployment. Make sure to use the same region when you are using the AWS Console.  Region codes may be looked up here: [Regional Endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html)
+  * `solutionName`: The solutionName is used in Amazon S3 bucket names so must be Amazon S3-compatible (lower-case characters, numbers, periods, and dashes)
+  * `awsRegion`: The region code (eg `us-east-1`) you will be using for the deployment. Make sure to use the same region when you are using the AWS Console.  Region codes may be looked up here: [Regional Endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html)
 
 4. In the terminal, run the `environment-deploy.sh` script to complete the installation, specifying the stage name as a parameter.
 
     * Note: This takes up to 15 minutes and can be ran in parallel with the AMI installation step, below.
 
 ```bash
-cd ~/environment/service-workbench-on-aws/
-./scripts/environment-deploy.sh ${STAGE_NAME}
+cd ~/environment/service-workbench-on-aws/ && ./scripts/environment-deploy.sh ${STAGE_NAME}
 ```
 
 5. Once the above step has completed, copy from its output the **Website URL** and **Root Password** for later use.
@@ -131,11 +132,10 @@ cd ~/environment/service-workbench-on-aws/
 
 To use EC2-based workspaces, you must ﬁrst install Amazon EC2 AMIs for these workspaces. This process may be run concurrently with the previous section (while `environment-deploy.sh` is running). To run both simultaneously, open a new terminal in Cloud9 (check that the environment variable `STAGE_NAME` is set correctly in the new terminal)
 
-1. In the terminal, run the following command to start the Amazon EC2 AMI generation
+1. **In a new terminal**, run the following command to start the Amazon EC2 AMI generation
  
 ```bash
-cd ~/environment/service-workbench-on-aws/main/solution/machine-images/ 
-pnpx sls build-image -s ${STAGE_NAME}
+cd ~/environment/service-workbench-on-aws/main/solution/machine-images/ && pnpx sls build-image -s ${STAGE_NAME}
 ```
 
 2. Once the process has been completed, you can verify that the Amazon EC2 AMI were created by running:
@@ -155,7 +155,7 @@ In this section, you will set up your Service Workbench instance with accounts, 
 
 **Compute Hosting** accounts are the accounts in which research compute resources are deployed, and which are responsible for the billing of those resources. In this deployment, the hosting account will be the same as the deployment account.
 
-1.	In a terminal window, run the following commands to create an AWS CloudFormation stack named `aws-hosting-account-<HOSTINGACCOUNT>-stack`. Call the script using the 12-digit account number of the Compute Hosting account (which in this case is the same account as Service Workbench was deployed into).
+1.	In a terminal window, run the following commands to create an AWS CloudFormation stack named `swb-hosting-compute-<HOSTINGACCOUNT>-<STAGE_NAME>-stack`. Call the script using the 12-digit account number of the Compute Hosting account (which in this case is the same account as Service Workbench was deployed into).
 
 ```bash
 # Go to our hosting account script dir
@@ -186,7 +186,7 @@ aws sts get-caller-identity | jq -r '.Account'
 | WorkﬂowRoleArn               | **WorkﬂowLoopRunnerRoleArn** created in the first step  |
 |                              |                                                         |
  
-3. In the AWS CloudFormation console, locate and run the stack `aws-hosting-account-<HOSTINGACCOUNT>-stack`. The Outputs of the stack will contain values similar to:
+3. In the AWS CloudFormation console, locate and run the stack `swb-hosting-compute-<HOSTINGACCOUNT>-<STAGE_NAME>-stack`. The Outputs of the stack will contain values similar to:
 
 | Key                          | Value                                               |
 | ---------------------------- | --------------------------------------------------- |
@@ -348,7 +348,90 @@ In this step, we will create a Data Source, which is a study hosted in a Storage
 1. This new Study in an external bucket is now available to be mounted on a new Workspace, and behaves the same as a Study created in the main account bucket
 
 ---
-# 4. Post-Deployment Tasks
-Once your basic installation is complete, you can stop or terminate the AWS Cloud9 instance that you used to deploy Service Workbench on AWS, as the instance is only needed to for the deployment process. Stopping the instance, rather than terminating it, is recommended if you intend to update your Service Workbench on AWS deployment as the platform is updated.
+# 4. Cleaning up your environment
 
-For creating a Service Workbench on AWS deployment that can be demonstrated to researchers, it’s recommended that you create workspace conﬁgurations for several of the default workspace types.
+Cleaning up the resources created should be done in reversal of creation order. We will be using the same AWS Cloud9 originally used to deploy the workshop.
+
+## 4.1 Stopping all workspaces
+Go to each of your running workspaces and click on **Terminate**, wait until their status show Terminated.
+
+## 4.2 Removing Compute hosting accounts
+We'll start removing Compute hosting accounts (eg: all `swb-hosting-compute-<HOSTINGACCOUNT>-<STAGE_NAME>-stack` stacks). 
+
+1. On a **new terminal window**: 
+
+```
+aws cloudformation list-stacks \
+   --query "StackSummaries[?contains(StackName, 'swb-hosting-compute')].{Stack:StackName}" \
+   --region $AWS_REGION --stack-status-filter CREATE_COMPLETE \
+   --output text
+```
+
+2. This will output one or more stack named `swb-hosting-compute-<HOSTINGACCOUNT>-<STAGENAME>-stack`. Now for each stack, execute:
+
+```
+aws cloudformation delete-stack --stack-name STACKNAME-FROM-PREVIOUS-STEP
+```
+
+2.1 *(Optionally)* if you wan't to wait for the stack deletion before moving forward, you can use a cloudformation waiter.
+```
+aws cloudformation wait stack-delete-complete --stack-name STACKNAME-FROM-PREVIOUS-STEP
+```
+
+## 4.3 Deregister sample created AMIs
+
+1. List all the created AMIs using the `alias` that we created earlier.
+```
+swb-ami-list
+```
+2. For **each Image-Id** listed on the second column, execute:
+```
+aws ec2 deregister-image --image-id <AMI-ID>
+```
+3. After executing them, use the alias again to check for the removal:
+```
+swb-ami-list
+```
+
+## 4.4 Undeploy the solution
+
+1. Let's undeploy Service Workbench Solution using the buil-in delete script:
+```
+cd ~/environment/service-workbench-on-aws/ && ./scripts/environment-delete.sh ${STAGE_NAME}
+```
+2. Type the stage name into the confirmation box and wait for the process to finish.
+3. Answer `Y` to the SSM Parameters prompts (at least 2)
+4. You will see this message once the process finishes, prompting you to remove anything that might be left over manually:
+```
+*******************************************************************
+*****      ----- ENVIRONMENT DELETED SUCCESSFULLY  🎉!! -----     *****
+*******************************************************************
+You still have to remove the following elements :
+  -[Edge lambda]: It can be deleted manually in 1 hour,
+     see it at https://console.aws.amazon.com/lambda
+  -[Consumer Accounts]: The resources deployed on your
+     AWS consumer accounts will still be there.
+     see at 
+       https://console.aws.amazon.com/ec2/v2/home,
+       https://console.aws.amazon.com/sagemaker/home
+```       
+
+## 4.5 Removing AWS Cloud9 
+Lastly, let's remove AWS Cloud9 using the **AWS CLI**.
+
+1. On a **new terminal window**: 
+
+```
+aws cloudformation list-stacks \
+   --query "StackSummaries[?contains(StackName, 'c9-swb')].{Stack:StackName}" \
+   --region $AWS_REGION --stack-status-filter CREATE_COMPLETE \
+   --output text
+```
+
+2. This will output one stack named `aws-cloud0-c9-swb-dev-XXXXXXXXXXXXXX`. Now execute:
+
+```
+aws cloudformation delete-stack --stack-name STACKNAME-FROM-PREVIOUS-STEP
+```
+
+3. As soon as you execute the statement above, the AWS Cloud9 instance will disconnect.
