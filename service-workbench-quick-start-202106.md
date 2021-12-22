@@ -59,14 +59,13 @@ cd aws-swb-cloud9-init
     * Installs **Packer**, used to build custom AMI images.
     * Installs the **Go language**, used to build the S3 synchronizer for Windows instances.
 
-**Note: Node Version**
-
-Node version 16 and above are known to cause an issue resulting in an error message 'Uploaded file must be a non-empty zip' during deployment.  With nvm installed as above, select Node version 14 by issuing the command `nvm install v14.18`
-
 ```bash
 # From directory ~/environment/aws-swb-cloud9-init
 source tools-init.sh
 ```
+**Note: Node Version**
+
+Node version 16 and above are known to cause an issue resulting in an error message 'Uploaded file must be a non-empty zip' during deployment.  With nvm installed as above, select Node version 14 by issuing the command `nvm install v14.18`
 
 ## 1.4 (Optional) Access platform reference documentation
 A static version of the Service Workbench documentation is available [here](http://swb-documentation.s3-website-us-east-1.amazonaws.com/introduction/)
