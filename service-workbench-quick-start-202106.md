@@ -111,6 +111,12 @@ cp example.yml ${STAGE_NAME}.yml
   * `solutionName`: The solutionName is used in Amazon S3 bucket names so must be Amazon S3-compatible (lower-case characters, numbers, periods, and dashes)
   * `awsRegion`: The region code (eg `us-east-1`) you will be using for the deployment. Make sure to use the same region when you are using the AWS Console.  Region codes may be looked up here: [Regional Endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html)
 
+  Optionally, if deploying to a custom domain, set values for:
+
+  * `domainName`: Fully qualified domain name
+  * `certificateArn`: ARN of the certificate for this domain, from Certificate Manager
+  * `hostedZoneId`: If you already have a Hosted Zone for this domain in Route 53 (this field is not present by default)
+
 4. In the terminal, run the `environment-deploy.sh` script to complete the installation, specifying the stage name as a parameter.
 
     * Note: This takes up to 15 minutes and can be ran in parallel with the AMI installation step, below.
